@@ -3568,7 +3568,7 @@ async function cargarSolicitudes() {
 
 </div>
 `;
-        }); z
+        }); 
 
         // 🔥 SOLO UNA VEZ
         cont.innerHTML = html;
