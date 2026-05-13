@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <link rel="manifest" href="manifest.json">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login CRM</title>
+
+<style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #0f172a; /* oscuro elegante */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.login-container {
+  background: #ffffff;
+  padding: 40px;
+  border-radius: 16px;
+  width: 340px;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  text-align: center;
+}
+
+h2 {
+  margin-bottom: 25px;
+  color: #0f172a;
+}
+
+input {
+  width: 100%;
+  padding: 12px;
+  margin: 10px 0;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  outline: none;
+  transition: 0.2s;
+}
+
+input:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 2px rgba(59,130,246,0.2);
+}
+
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  background: #3b82f6;
+  border: none;
+  color: white;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+button:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+.logo {
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #3b82f6;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin-bottom: 20px;
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="login-container">
+  <div class="logo">POSICIONUP CRM</div>
+  <div class="subtitle">Acceso al panel</div>
+
+  <input id="user" placeholder="Usuario">
+  <input id="pass" type="password" placeholder="Contraseña">
+
+  <button id="btnLogin">Entrar</button>
+</div>
+
+<script>
+
+document.getElementById("btnLogin").addEventListener("click", login);
+
+function login() {
+
+  const username = document.getElementById("user").value;
+  const password = document.getElementById("pass").value;
+
+  fetch("https://crm-backend-production-7e25.up.railway.app/auth/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      username: username,
+      password: password
+    })
+  })
+  .then(res => res.json()) // 🔥 ahora recibimos objeto usuario
+  .then(user => {
+
+    // 🔐 sesión
+    localStorage.setItem("auth", "true");
+
+    // 👤 datos usuario
+    localStorage.setItem("userId", user.id);
+    localStorage.setItem("username", user.nombre || user.username);
+
+    // 🖼️ avatar
+    localStorage.setItem("userImg", user.avatar || "img/logo192.png");
+
+    // 🚀 redirección
+    window.location.href = "clientes.html";
+
+  })
+  .catch(err => {
+    console.error("Error:", err);
+    mostrarToast("Login incorrecto o error de servidor");
+  });
+
+}
+
+// ENTER para login
+document.getElementById("pass").addEventListener("keypress", function(e) {
+  if (e.key === "Enter") {
+    login();
+  }
+});
+
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log("SW registrado"));
+}
+</script>
+</body>
+</html>

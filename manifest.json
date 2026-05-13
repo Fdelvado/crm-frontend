@@ -1,0 +1,34 @@
+{
+  "name": "PosicionUp CRM",
+  "short_name": "CRM",
+  "start_url": "/clientes.html",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#0f172a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "logo192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "logo512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "screenshots": [
+  {
+    "src": "screenshot-desktop.png",
+    "sizes": "391x853",
+    "type": "image/png",
+    "form_factor": "wide"
+  },
+  {
+    "src": "screenshot-mobile.png",
+    "sizes": "396x857",
+    "type": "image/png"
+  }
+]
+}

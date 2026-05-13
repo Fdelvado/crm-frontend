@@ -1,0 +1,978 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <title>CRM</title>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+
+
+</head>
+
+<body>
+
+    <!-- LOGIN -->
+<div id="loginScreen" class="login-screen">
+
+    <div class="login-box">
+
+        <img src="logo192.png" class="login-logo">
+
+        <h2>PosicionUp CRM</h2>
+
+        <input
+            id="loginUser"
+            type="text"
+            placeholder="Usuario"
+        >
+
+        <input
+            id="loginPass"
+            type="password"
+            placeholder="Contraseña"
+        >
+
+        <button onclick="login()">
+            Entrar
+        </button>
+
+    </div>
+
+</div>
+
+<!-- CRM -->
+<div id="crmApp">
+
+    <div id="overlay" class="overlay"></div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo"> <span>🚀 CRM</span> <i class="fas fa-bars"></i> </button> </div> <!-- GENERAL -->
+        <div class="menu-section">GENERAL</div> <a id="btnDashboard" class="active"
+            onclick="cargarSeccion('dashboard')"> <i class="fas fa-chart-line"></i><span>Dashboard</span> </a> <a
+            id="btnClientes" onclick="cargarSeccion('clientes')"> <i class="fas fa-users"></i><span>Clientes</span> </a>
+        <a id="btnLeads" onclick="cargarSeccion('leads')"> <i class="fas fa-envelope"></i><span>Leads</span> </a> <a
+            id="btnCorreo" onclick="cargarSeccion('correo')"> <i class="fas fa-inbox"></i><span>Correo</span> </a> <a
+            id="btnProyectos" onclick="cargarSeccion('proyectos')"> <i class="fas fa-folder"></i><span>Proyectos</span>
+        </a>
+        <a id="btnAgenda" onclick="cargarSeccion('agenda')">
+            <i class="fas fa-calendar"></i><span>Agenda</span>
+        </a>
+        <!-- NEGOCIO -->
+        <div class="menu-section">NEGOCIO</div> <a id="btnFacturacion" onclick="cargarSeccion('facturacion')"> <i
+                class="fas fa-file-invoice-dollar"></i><span>Facturación</span> </a> <a id="btnIncidencias"
+            onclick="cargarSeccion('incidencias')">
+            <i class="fas fa-exclamation-triangle"></i><span>Incidencias</span>
+        </a>
+        <!-- SISTEMA -->
+        <div class="menu-section">SISTEMA</div> <a id="btnAjustes" onclick="cargarSeccion('ajustes')"> <i
+                class="fas fa-cog"></i><span>Ajustes</span> </a>
+    </div>
+
+    <!-- MAIN -->
+    <div class="main">
+        <div class="topbar"> <!-- IZQUIERDA -->
+            <div class="top-left">
+
+                <div class="menu-title">
+                    <button class="toggle-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+
+                    <h2 id="tituloPagina">Dashboard</h2>
+                </div>
+
+                <span class="breadcrumb">Dashboard / Dashboard</span>
+
+            </div>
+            <!-- DERECHA -->
+            <div class="top-right"> <button id="btnNuevo" class="btn-new" onclick="abrirModal()"> <i
+                        class="fas fa-plus"></i> Nuevo </button>
+                <div class="user-box" onclick="abrirPerfil()"> <img id="userAvatar"
+                        src="logo192.png"> <span id="userName">Fernando</span> </div>
+                <button class="logout-btn" onclick="logout()"> <i class="fas fa-sign-out-alt"></i> </button>
+            </div>
+        </div> <!-- CONTENIDO DINÁMICO -->
+        <div id="contenido"></div>
+    </div> <!-- ================= DASHBOARD ================= -->
+
+    <div id="dashboardSection" style="display:none;">
+        <div class="dashboard-header">
+            <h1>📊 Dashboard</h1>
+            <p>Resumen general del negocio</p>
+        </div>
+
+
+        <div class="dashboard-kpis">
+
+            <div class="kpi-card big">
+                <span>Clientes</span>
+                <h2 id="totalClientes">0</h2>
+            </div>
+
+            <div class="kpi-card">
+                <span>Leads</span>
+                <h2 id="totalLeads">0</h2>
+            </div>
+
+            <div class="kpi-card">
+                <span>Ingresos</span>
+                <h2 id="totalIngresos">€0</h2>
+            </div>
+
+            <!-- 🔥 AQUI AÑADES ESTO -->
+            <div class="kpi-card">
+                <span>Gastos</span>
+                <h2 id="gastos">€0</h2>
+            </div>
+
+            <div class="kpi-card">
+                <span>Balance</span>
+                <h2 id="balance">€0</h2>
+            </div>
+
+            <div class="kpi-card">
+                <span>Incidencias abiertas</span>
+                <h2 id="totalIncidencias">0</h2>
+            </div>
+
+        </div>
+        <div class="dashboard-main">
+            <div class="card">
+                <h3>📈 Crecimiento</h3> <canvas id="graficaClientes"></canvas>
+            </div>
+            <div class="card">
+                <h3>⚡ Actividad</h3>
+                <div id="actividad"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CLIENTES -->
+    <div id="clientesSection" style="display:none;">
+
+        <div class="card tabla-card">
+
+            <!-- HEADER -->
+            <div class="tabla-header-pro">
+
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input id="buscador" placeholder="Buscar cliente...">
+                </div>
+
+                <button class="btn-new" onclick="nuevoCliente()">
+                    <i class="fas fa-plus"></i> Nuevo cliente
+                </button>
+
+            </div>
+
+
+
+            <!-- 🔥 LA TABLA VA DENTRO -->
+            <table id="tablaClientes">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Teléfono</th>
+                        <th>Empresa</th>
+                        <th>CIF</th>
+                        <th>Dirección</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- LEADS -->
+    <div id="leadsSection" style="display:none;">
+
+        <div class="card tabla-card">
+
+            <!-- HEADER -->
+            <div class="tabla-header-pro">
+
+                <div class="search-box">
+                    <i class="fas fa-search"></i>
+                    <input id="buscadorLeads" placeholder="Buscar lead...">
+                </div>
+
+                <button class="btn-new" onclick="abrirModalLead()">
+                    <i class="fas fa-plus"></i> Nuevo Lead
+                </button>
+
+            </div>
+
+            <!-- TABLA -->
+            <table id="tablaLeads">
+
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Empresa</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody></tbody>
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- CORREO -->
+    <div id="correoSection" style="display:none;">
+
+        <div class="correo-container">
+
+            <!-- LISTA -->
+            <div class="correo-lista">
+                <div class="correo-header">
+                    <h3>📩 Bandeja de entrada</h3>
+                    <button class="btn-mail" onclick="abrirModalCorreo()">
+                        <i class="fas fa-paper-plane"></i> Redactar
+                    </button>
+                </div>
+
+
+                <div id="listaCorreos"></div>
+            </div>
+
+            <!-- DETALLE -->
+            <div class="correo-detalle">
+                <div id="detalleCorreo">
+                    <p style="color:#64748b;">Selecciona un correo</p>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- PROYECTOS -->
+    <div id="proyectosSection" style="display:none;">
+
+        <div class="proyectos-header">
+            <h3>📁 Proyectos</h3>
+            <button class="btn-new" onclick="abrirModalProyecto()">
+                <i class="fas fa-plus"></i> Nuevo proyecto
+            </button>
+        </div>
+
+        <div class="kanban">
+
+            <div class="kanban-col" data-estado="pendiente">
+                <h4>🟡 Pendiente</h4>
+                <div class="kanban-list" id="colPendiente"></div>
+            </div>
+
+            <div class="kanban-col" data-estado="curso">
+                <h4>🔵 En curso</h4>
+                <div class="kanban-list" id="colCurso"></div>
+            </div>
+
+            <div class="kanban-col" data-estado="finalizado">
+                <h4>🟢 Finalizado</h4>
+                <div class="kanban-list" id="colFinalizado"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- FACTURACIÓN -->
+    <div id="facturacionSection" style="display:none;">
+
+        <div class="card">
+
+            <!-- HEADER -->
+            <div class="tabla-header-pro">
+                <h3>💰 Facturación</h3>
+
+                <button class="btn-new" onclick="abrirModalFactura()">
+                    <i class="fas fa-plus"></i> Nueva factura
+                </button>
+            </div>
+
+            <!-- TABLA (RESPONSIVE) -->
+            <div class="table-container">
+
+                <table id="tablaFacturas">
+
+                    <thead>
+                        <tr>
+                            <th>Cliente</th>
+                            <th>Empresa</th>
+                            <th>Descripción</th>
+                            <th>Fecha</th>
+                            <th>Base (€)</th>
+                            <th>IVA</th>
+                            <th>Total (€)</th>
+                            <th>Pagado (€)</th>
+                            <th>Pendiente (€)</th>
+                            <th>Tipo</th>
+                            <th>Estado</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <!-- 🔥 se rellena dinámicamente -->
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div id="incidenciasSection" style="display:none;">
+
+        <div class="card tabla-card">
+
+            <div class="tabla-header-pro">
+
+                <h3>⚠️ Incidencias</h3>
+
+                <button class="btn-new" onclick="abrirModalIncidencia()">
+                    <i class="fas fa-plus"></i> Nueva incidencia
+                </button>
+
+            </div>
+
+            <table id="tablaIncidencias">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Cliente</th>
+                        <th>Empresa</th>
+                        <th>Descripción</th>
+                        <th>Fecha</th>
+                        <th>Estado</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody></tbody>
+            </table>
+
+        </div>
+
+    </div>
+    <div id="agendaSection" style="display:none;">
+
+        <div class="card">
+
+            <div style="
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        ">
+
+                <button onclick="cambiarMes(-1)">⬅️</button>
+
+                <h3 id="mesActual"></h3>
+
+                <button onclick="cambiarMes(1)">➡️</button>
+
+            </div>
+
+            <div id="calendario" class="calendario-grid"></div>
+
+        </div>
+
+        <!-- 🔥 FIJO -->
+        <div id="solicitudesCitas"></div>
+
+    </div>
+
+    <div id="ajustesSection" style="display:none;">
+
+        <div class="card">
+
+            <h3>⚙️ Ajustes</h3>
+
+            <!-- PERFIL -->
+            <h4>👤 Perfil</h4>
+            <input id="ajNombre" placeholder="Nombre">
+            <input id="ajEmail" placeholder="Email">
+
+            <!-- EMPRESA -->
+            <h4 style="margin-top:20px;">🏢 Empresa</h4>
+            <input id="ajEmpresa" placeholder="Nombre empresa">
+            <input id="ajCIF" placeholder="CIF">
+            <input id="ajDireccion" placeholder="Dirección">
+            <input id="ajTelefono" placeholder="Teléfono">
+
+            <!-- BOTONES -->
+            <div style="margin-top:20px;">
+                <button class="btn-new" onclick="guardarAjustes()">Guardar</button>
+            </div>
+
+        </div>
+
+        <!-- BACKUP -->
+        <div class="card">
+
+            <h4>💾 Datos</h4>
+
+            <button class="btn-new" onclick="exportarDatos()">Exportar datos</button>
+
+            <button class="logout-btn" onclick="resetearTodo()">
+                Resetear CRM
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+    <div id="modalCliente" class="modal">
+        <div class="modal-content">
+
+            <h3 id="tituloModal">Nuevo Cliente</h3>
+
+            <input type="hidden" id="id">
+
+            <input type="text" id="nombre" placeholder="Nombre">
+            <small class="error-msg" id="errorNombre"></small>
+
+            <input type="text" id="telefono" placeholder="Teléfono">
+
+            <input type="email" id="email" placeholder="Email">
+            <small class="error-msg" id="errorEmail"></small>
+
+            <input type="text" id="empresa" placeholder="Empresa">
+
+            <!-- 🔥 NUEVOS -->
+            <input type="text" id="cif" placeholder="CIF">
+            <input type="text" id="direccion" placeholder="Dirección">
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button id="btnGuardar" type="button" class="btn-new" onclick="guardar()">Guardar</button>
+
+                <button type="button" class="btn-cancel" onclick="cerrarModal()">
+                    Cancelar
+                </button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <div id="modalLead" class="modal">
+        <div class="modal-content">
+
+            <h3>Nuevo Lead</h3>
+
+            <input id="leadNombre" placeholder="Nombre">
+            <input id="leadEmail" placeholder="Email">
+            <input id="leadEmpresa" placeholder="Empresa">
+
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button class="btn-new" onclick="guardarLead()">Guardar</button>
+                <button onclick="cerrarModalLead()">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalCorreo" class="modal">
+        <div class="modal-content">
+
+            <h3>Nuevo correo</h3>
+
+            <select id="correoPara"></select>
+            <input id="correoAsunto" placeholder="Asunto">
+            <textarea id="correoMensaje" placeholder="Mensaje"></textarea>
+
+            <div style="margin-top:10px;">
+                <button class="btn-new" onclick="enviarCorreo()">Enviar</button>
+                <button onclick="cerrarModalCorreo()">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+    <div id="modalProyecto" class="modal">
+        <div class="modal-content">
+
+            <h3>Proyecto</h3>
+
+            <input type="hidden" id="proyectoId">
+
+            <input id="proyectoTitulo" placeholder="Título">
+            <input id="proyectoDesc" placeholder="Descripción">
+            <select id="proyectoCliente"></select>
+
+            <div style="margin-top:10px;">
+                <button class="btn-new" onclick="guardarProyecto()">Guardar</button>
+                <button onclick="cerrarModalProyecto()">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalFactura" class="modal">
+        <div class="modal-content">
+
+            <h3>Nueva factura</h3>
+
+            <!-- CLIENTE -->
+            <input id="facturaCliente" type="text" placeholder="Nombre cliente">
+
+            <!-- EMPRESA -->
+            <input id="facturaEmpresa" type="text" placeholder="Empresa">
+
+            <!-- CONCEPTO -->
+            <input id="facturaConcepto" type="text" placeholder="Concepto">
+
+            <!-- IMPORTE -->
+            <input id="facturaImporte" type="number" step="0.01" placeholder="Importe (€)">
+
+            <!-- IVA 🔥 -->
+            <select id="facturaIVA">
+                <option value="0.21">IVA 21%</option>
+                <option value="0.10">IVA 10%</option>
+                <option value="0.04">IVA 4%</option>
+                <option value="0">Sin IVA</option>
+            </select>
+
+            <!-- BOTONES -->
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn-new" onclick="guardarFactura()">Guardar</button>
+                <button class="btn-cancel" onclick="cerrarModalFactura()">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div id="modalIncidencia" class="modal">
+        <div class="modal-content">
+
+            <h3>Nueva incidencia</h3>
+
+            <input id="incCliente" placeholder="Nombre del cliente">
+
+            <input id="incEmpresa" placeholder="Empresa">
+
+            <!-- DESCRIPCIÓN -->
+            <textarea id="incDesc" placeholder="Descripción de la incidencia"></textarea>
+
+            <div style="display:flex; gap:10px; margin-top:15px;">
+                <button class="btn-new" onclick="guardarIncidencia()">Guardar</button>
+                <button class="btn-cancel" onclick="cerrarModalIncidencia()">Cancelar</button>
+            </div>
+
+        </div>
+        <div id="toast" style="
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #16a34a;
+    color: white;
+    padding: 12px 18px;
+    border-radius: 8px;
+    display: none;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    z-index: 9999;
+">
+        </div>
+
+
+
+        <div id="modalEmpresa" class="modal">
+            <div class="modal-content" style="
+        width:1000px;
+        max-width:95%;
+        max-height:90vh;
+        overflow-y:auto;
+    ">
+
+                <h2>📊 Datos Empresariales</h2>
+
+                <!-- 1. DATOS GENERALES -->
+                <div class="card">
+                    <h3>1. DATOS GENERALES</h3>
+
+                    <input id="empNombre" placeholder="Nombre de la empresa">
+                    <input id="empCif" placeholder="CIF">
+                    <input id="empDireccion" placeholder="Domicilio Social">
+                    <input id="empCnae" placeholder="CNAE">
+                    <input id="empIae" placeholder="IAE">
+                    <input id="empActividad" placeholder="Actividad">
+                    <input id="empFechaInicio" placeholder="Fecha inicio actividad">
+
+                    <input id="empCuentas" placeholder="Cuentas anuales (Presentadas/No/Año)">
+                </div>
+
+                <!-- 2. ADMINISTRACIÓN -->
+                <div class="card">
+                    <h3>2. ADMINISTRACIÓN</h3>
+
+                    <input id="empAdmin" placeholder="Administrador">
+                    <input id="empDniAdmin" placeholder="DNI/NIE">
+                    <input id="empIban" placeholder="IBAN">
+
+                    <input id="empRea" placeholder="REA / Nº Registro">
+
+                    <input id="empSeguroCompania" placeholder="Seguro - Compañía">
+                    <input id="empSeguroPoliza" placeholder="Nº póliza">
+                    <input id="empSeguroCobertura" placeholder="Cobertura">
+                    <input id="empSeguroVigencia" placeholder="Vigencia">
+
+                    <input id="empSeguroExtra" placeholder="Seguro adicional">
+                    <input id="empConvenio" placeholder="Convenio colectivo">
+                    <input id="empMutua" placeholder="Mutua de accidentes">
+                </div>
+
+                <!-- 3. CONTACTO -->
+                <div class="card">
+                    <h3>3. CONTACTO</h3>
+
+                    <input id="empEmail" placeholder="Email">
+                    <input id="empTelefono" placeholder="Teléfono">
+                    <input id="empContacto" placeholder="Persona de contacto">
+                    <input id="empCuota" placeholder="Cuota asesoría">
+                </div>
+
+                <!-- 4. ESCRITURA -->
+                <div class="card">
+                    <h3>4. DATOS DE LA ESCRITURA</h3>
+
+                    <input id="empNotario" placeholder="Notario">
+                    <input id="empFechaConst" placeholder="Fecha constitución">
+                    <input id="empProtocolo" placeholder="Nº protocolo">
+                    <input id="empLibro" placeholder="Libro">
+                    <input id="empTomo" placeholder="Tomo">
+                    <input id="empRegistro" placeholder="Registro Mercantil">
+                </div>
+
+                <!-- 5. SOCIOS -->
+                <div class="card">
+                    <h3>5. SOCIOS</h3>
+
+                    <input id="socio1" placeholder="Socio 1">
+                    <input id="socio1dni" placeholder="DNI">
+                    <input id="socio1porc" placeholder="%">
+
+                    <input id="socio2" placeholder="Socio 2">
+                    <input id="socio2dni" placeholder="DNI">
+                    <input id="socio2porc" placeholder="%">
+
+                    <input id="socio3" placeholder="Socio 3">
+                    <input id="socio3dni" placeholder="DNI">
+                    <input id="socio3porc" placeholder="%">
+                </div>
+
+                <!-- 6. TITULARIDAD -->
+                <div class="card">
+                    <h3>6. TITULARIDAD REAL</h3>
+
+                    <input id="titular1" placeholder="Titular 1">
+                    <input id="titular1dni" placeholder="DNI">
+                    <input id="titular1porc" placeholder="%">
+
+                    <input id="titular2" placeholder="Titular 2">
+                    <input id="titular2dni" placeholder="DNI">
+                    <input id="titular2porc" placeholder="%">
+                </div>
+
+                <!-- BOTONES -->
+                <div style="margin-top:20px; text-align:right; display:flex; gap:10px; justify-content:flex-end;">
+                    <button onclick="generarPDF()">📄 PDF</button>
+                    <button class="btn-save" onclick="guardarFichaEmpresa()">Guardar</button>
+                    <button class="btn-cancel" onclick="cerrarFichaEmpresa()">Cancelar</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+
+    <!-- ================= MODAL EVENTO ================= -->
+    <div id="modalEvento" class="modal">
+        <div class="modal-content">
+
+            <h3>Nuevo evento</h3>
+
+            <input id="evTitulo" placeholder="Título">
+            <input id="evFecha" type="datetime-local">
+
+            <select id="evTipo">
+                <option value="Cita">Cita</option>
+                <option value="Llamada">Llamada</option>
+                <option value="Proyecto">Proyecto</option>
+                <option value="Tarea">Tarea</option>
+            </select>
+
+            <textarea id="evDesc" placeholder="Descripción"></textarea>
+
+            <!-- EMAIL CLIENTE -->
+            <label class="check-line">
+                <input type="checkbox" id="enviarCliente">
+                Enviar confirmación al cliente
+            </label>
+
+            <input type="email" id="emailCliente" placeholder="Email del cliente" class="input-full">
+
+            <div class="acciones">
+                <button class="btn btn-save" onclick="guardarEvento()">Guardar</button>
+
+                <button id="btnEliminarEvento" class="btn btn-danger" onclick="eliminarEvento()" style="display:none;">
+                    Eliminar
+                </button>
+
+                <button class="btn btn-cancel" onclick="cerrarModalEvento()">Cancelar</button>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL VER CLIENTE ================= -->
+    <div id="modalVerCliente" class="modal">
+        <div class="modal-content">
+
+            <!-- HEADER -->
+            <div class="modal-header">
+
+                <div class="cliente-info">
+                    <div id="avatarCliente" class="avatar">F</div>
+
+                    <div>
+                        <input id="verNombre" disabled class="input-nombre">
+                        <input id="verEmpresa" disabled class="input-empresa">
+                    </div>
+                </div>
+
+                <div class="acciones">
+                    <button class="btn btn-edit" onclick="activarEdicion()">Editar</button>
+                    <button class="btn btn-save" onclick="guardarFichaCliente()">Guardar</button>
+                    <button class="btn btn-secondary" onclick="abrirFichaEmpresarial()">Datos empresariales</button>
+                    <button class="btn btn-cancel" onclick="cerrarModalVerCliente()">Cerrar</button>
+                </div>
+
+            </div>
+
+            <!-- GRID -->
+            <div class="grid">
+
+                <div class="card">
+                    <h3>Información</h3>
+
+                    <label>Email</label>
+                    <input id="verEmail">
+
+                    <label>Teléfono</label>
+                    <input id="verTelefono">
+
+                    <label>Fecha</label>
+                    <input id="verFecha">
+
+                    <label>CIF</label>
+                    <input id="verCif">
+
+                    <label>Dirección</label>
+                    <input id="verDireccion">
+                </div>
+
+                <div class="card">
+                    <h3>Servicios</h3>
+                    <div id="verServicios"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Facturación</h3>
+                    <p>Total: <strong id="verTotal"></strong></p>
+                    <p>Pendiente: <strong id="verPendiente"></strong></p>
+                </div>
+
+                <div class="card">
+                    <h3>Incidencias</h3>
+                    <p>Abiertas: <strong id="verIncidencias"></strong></p>
+                </div>
+
+            </div>
+
+            <!-- NOTAS -->
+            <div class="card">
+                <h3>Notas</h3>
+                <textarea id="verNotas"></textarea>
+            </div>
+
+        </div>
+    </div>
+
+
+    <!-- ================= MODAL DATOS EMPRESARIALES ================= -->
+    <div id="modalDatosEmpresariales" class="modal">
+        <div class="modal-content empresa-modal">
+
+            <div class="modal-header">
+                <h2>Datos empresariales</h2>
+
+                <div class="acciones">
+                    <button class="btn btn-save" onclick="guardarDatosEmpresa()">Guardar</button>
+                    <button class="btn btn-secondary" onclick="descargarDatosEmpresaPDF()">Descargar PDF</button>
+                    <button class="btn btn-cancel" onclick="cerrarDatosEmpresariales()">Cerrar</button>
+                </div>
+            </div>
+
+            <div class="empresa-grid">
+
+                <!-- DATOS GENERALES -->
+                <div class="card full">
+                    <h3>Datos generales</h3>
+
+                    <div class="grid-3">
+                        <input placeholder="Nombre empresa" id="emp_nombre">
+                        <input placeholder="CIF" id="emp_cif">
+                        <input placeholder="Domicilio social" id="emp_domicilio">
+                    </div>
+
+                    <div class="grid-3">
+                        <input placeholder="CNAE" id="emp_cnae">
+                        <input placeholder="IAE" id="emp_iae">
+                        <input placeholder="Actividad" id="emp_actividad">
+                    </div>
+
+                    <div class="grid-3">
+                        <input type="date" id="emp_fecha_inicio">
+                        <input placeholder="Año cuentas" id="emp_cuentas_anuales">
+                        <select id="emp_presentadas">
+                            <option>Presentadas</option>
+                            <option>No presentadas</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- ADMIN -->
+                <div class="card full">
+                    <h3>Administración</h3>
+
+                    <div class="grid-3">
+                        <input placeholder="Administrador" id="adm_nombre">
+                        <input placeholder="DNI/NIE" id="adm_dni">
+                        <input placeholder="IBAN" id="adm_iban">
+                    </div>
+
+                    <div class="grid-3">
+                        <input placeholder="REA Nº" id="adm_rea">
+                        <select id="adm_rea_bool">
+                            <option>Sí</option>
+                            <option>No</option>
+                        </select>
+                        <input placeholder="Mutua" id="adm_mutua">
+                    </div>
+
+                    <div class="grid-3">
+                        <input placeholder="Seguro compañía" id="seg_compania">
+                        <input placeholder="Nº póliza" id="seg_poliza">
+                        <input placeholder="Cobertura" id="seg_cobertura">
+                    </div>
+                </div>
+
+                <!-- CONTACTO -->
+                <div class="card">
+                    <h3>Contacto</h3>
+
+                    <input placeholder="Email" id="cont_email">
+                    <input placeholder="Teléfono" id="cont_tel">
+                    <input placeholder="Persona contacto" id="cont_persona">
+                    <input placeholder="Cuota asesoría" id="cont_cuota">
+                </div>
+
+                <!-- ESCRITURA -->
+                <div class="card">
+                    <h3>Escritura</h3>
+
+                    <input placeholder="Notario" id="esc_notario">
+                    <input type="date" id="esc_fecha">
+                    <input placeholder="Protocolo" id="esc_protocolo">
+                    <input placeholder="Libro" id="esc_libro">
+                    <input placeholder="Tomo" id="esc_tomo">
+                    <input placeholder="Registro Mercantil" id="esc_registro">
+                </div>
+
+                <!-- SOCIOS -->
+                <div class="card full">
+                    <h3>Socios</h3>
+
+                    <div class="grid-3">
+                        <input placeholder="Socio 1" id="soc1_nombre">
+                        <input placeholder="DNI" id="soc1_dni">
+                        <input placeholder="% participación" id="soc1_pct">
+                    </div>
+
+                    <div class="grid-3">
+                        <input placeholder="Socio 2" id="soc2_nombre">
+                        <input placeholder="DNI" id="soc2_dni">
+                        <input placeholder="% participación" id="soc2_pct">
+                    </div>
+
+                    <div class="grid-3">
+                        <input placeholder="Socio 3" id="soc3_nombre">
+                        <input placeholder="DNI" id="soc3_dni">
+                        <input placeholder="% participación" id="soc3_pct">
+                    </div>
+                </div>
+
+                <!-- TITULARIDAD -->
+                <div class="card full">
+                    <h3>Titularidad real</h3>
+
+                    <div class="grid-3">
+                        <input placeholder="Titular 1" id="tit1_nombre">
+                        <input placeholder="DNI" id="tit1_dni">
+                        <input placeholder="% control" id="tit1_pct">
+                    </div>
+
+                    <div class="grid-3">
+                        <input placeholder="Titular 2" id="tit2_nombre">
+                        <input placeholder="DNI" id="tit2_dni">
+                        <input placeholder="% control" id="tit2_pct">
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <div id="facturaPDF" style="display:none;"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <script src="js/app.js"></script>
+
+    <div id="toast"></div>
+
+    </div>
+
+</body>
+
+</html>
