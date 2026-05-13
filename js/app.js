@@ -3480,7 +3480,7 @@ async function cargarSolicitudes() {
     try {
 
         const res = await fetch(
-            "http://localhost:8081/solicitudes"
+            "https://crm-backend-production-7e25.up.railway.app/solicitudes"
         );
 
         const data = await res.json();
@@ -3591,7 +3591,7 @@ window.aceptarSolicitud = async function (id) {
     try {
 
         const res = await fetch(
-            "http://localhost:8081/solicitudes"
+            "https://crm-backend-production-7e25.up.railway.app/solicitudes"
         );
 
         const solicitudes =
@@ -3646,7 +3646,7 @@ window.aceptarSolicitud = async function (id) {
         // =========================
 
         await fetch(
-            "http://localhost:8081/citas",
+            "https://crm-backend-production-7e25.up.railway.app/citas",
             {
                 method: "POST",
 
@@ -3679,7 +3679,7 @@ window.aceptarSolicitud = async function (id) {
         // =========================
 
         await fetch(
-            "http://localhost:8081/correo/enviar",
+            "https://crm-backend-production-7e25.up.railway.app/correo/enviar",
             {
                 method: "POST",
 
@@ -3870,7 +3870,7 @@ window.rechazarSolicitud = async function (id) {
         if (!confirmar) return;
 
         const res = await fetch(
-            "http://localhost:8081/solicitudes"
+            "https://crm-backend-production-7e25.up.railway.app/solicitudes"
         );
 
         const solicitudes =
@@ -3886,7 +3886,7 @@ window.rechazarSolicitud = async function (id) {
         // =========================
 
         await fetch(
-            "http://localhost:8081/correo/enviar",
+            "https://crm-backend-production-7e25.up.railway.app/correo/enviar",
             {
                 method: "POST",
 
