@@ -3474,7 +3474,7 @@ function descargarFacturaPDF(factura) {
     // 🚀 GENERAR PDF
     html2pdf().set(opt).from(contenedor).save();
 }
-
+// deploy fix
 async function cargarSolicitudes() {
 
     try {
