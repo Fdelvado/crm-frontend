@@ -395,7 +395,7 @@ async function guardar() {
     try {
 
         if (idVal) {
-            await fetch(`http://localhost:8080/clientes/${idVal}`, {
+            await fetch(`https://crm-backend-production-7e25.up.railway.app/clientes/${idVal}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify(cliente)
@@ -425,7 +425,7 @@ async function eliminar(idCliente) {
 
     if (!confirm("¿Eliminar cliente?")) return;
 
-    await fetch(`http://localhost:8080/clientes/${idCliente}`, {
+    await fetch(`https://crm-backend-production-7e25.up.railway.app/clientes/${idCliente}`, {
         method: "DELETE"
     });
 
@@ -857,7 +857,7 @@ function activarDrop() {
 
             proyectos[index].estado = estado;
 
-            fetch(`http://localhost:8080/proyectos/${proyectos[index].id}`, {
+            fetch(`https://crm-backend-production-7e25.up.railway.app/proyectos/${proyectos[index].id}`, {
 
     method: "PUT",
 
@@ -975,7 +975,7 @@ async function eliminarProyecto(id) {
 
     try {
 
-        await fetch(`http://localhost:8080/proyectos/${id}`, {
+        await fetch(`https://crm-backend-production-7e25.up.railway.app/proyectos/${id}`, {
 
             method: "DELETE"
         });
@@ -1001,7 +1001,7 @@ async function cambiarEstadoProyecto(
         // 💾 MYSQL
         const res = await fetch(
 
-            `http://localhost:8080/proyectos/${proyectos[index].id}`,
+            `https://crm-backend-production-7e25.up.railway.app/proyectos/${proyectos[index].id}`,
 
             {
                 method: "PUT",
@@ -1334,7 +1334,7 @@ async function guardarFactura() {
 
             // 🔥 MYSQL UPDATE
             const res = await fetch(
-                `http://localhost:8080/facturas/${facturaEditando.id}`,
+                `https://crm-backend-production-7e25.up.railway.app/facturas/${facturaEditando.id}`,
                 {
                     method: "PUT",
 
@@ -1474,7 +1474,7 @@ async function eliminarFactura(id) {
     try {
 
         const res = await fetch(
-            `http://localhost:8080/facturas/${id}`,
+            `https://crm-backend-production-7e25.up.railway.app/facturas/${id}`,
             {
                 method: "DELETE"
             }
@@ -1797,7 +1797,7 @@ async function cambiarEstadoIncidencia(id, estadoActual) {
     const estados = ["abierta", "proceso", "cerrada"];
     const nuevoEstado = estados[(estados.indexOf(estadoActual) + 1) % 3];
 
-    await fetch(`http://localhost:8080/incidencias/${id}`, {
+    await fetch(`https://crm-backend-production-7e25.up.railway.app/incidencias/${id}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ estado: nuevoEstado })
@@ -1810,7 +1810,7 @@ async function eliminarIncidencia(id) {
 
     if (!confirm("¿Eliminar incidencia?")) return;
 
-    await fetch(`http://localhost:8080/incidencias/${id}`, {
+    await fetch(`https://crm-backend-production-7e25.up.railway.app/incidencias/${id}`, {
         method: "DELETE"
     });
 
@@ -2182,7 +2182,7 @@ async function abrirFichaEmpresarial() {
 
     const id = window.clienteActualId;
 
-    const res = await fetch(`http://localhost:8080/empresa/${id}`);
+    const res = await fetch(`https://crm-backend-production-7e25.up.railway.app/empresa/${id}`);
     const data = await res.json();
 
     // 🔥 rellenar campos
@@ -2299,7 +2299,7 @@ async function generarPDF() {
 
     const id = window.clienteActualId;
 
-    const res = await fetch(`http://localhost:8080/empresa/${id}`);
+    const res = await fetch(`https://crm-backend-production-7e25.up.railway.app/empresa/${id}`);
     const data = await res.json();
 
     const doc = new jsPDF();
@@ -2791,7 +2791,7 @@ async function eliminarEvento(id) {
 
     try {
 
-        const res = await fetch(`http://localhost:8080/eventos/${id}`, {
+        const res = await fetch(`https://crm-backend-production-7e25.up.railway.app/eventos/${id}`, {
             method: "DELETE"
         });
 
@@ -3815,7 +3815,7 @@ window.aceptarSolicitud = async function (id) {
         // =========================
 
         await fetch(
-            `http://localhost:8081/solicitudes/${id}`,
+            `https://crm-backend-production-7e25.up.railway.app/solicitudes/${id}`,
             {
                 method: "DELETE"
             }
@@ -4026,7 +4026,7 @@ window.rechazarSolicitud = async function (id) {
         // =========================
 
         await fetch(
-            `http://localhost:8081/solicitudes/${id}`,
+            `https://crm-backend-production-7e25.up.railway.app/solicitudes/${id}`,
             {
                 method: "DELETE"
             }
