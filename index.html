@@ -95,57 +95,56 @@ button:hover {
 
 document.getElementById("btnLogin").addEventListener("click", login);
 
-function login() {
+async function login() {
 
-  const username = document.getElementById("user").value;
-  const password = document.getElementById("pass").value;
+    const username =
+        document.getElementById("loginUser").value;
 
-  fetch("https://crm-backend-production-7e25.up.railway.app/auth/login", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      username: username,
-      password: password
-    })
-  })
-  .then(res => res.json()) // 🔥 ahora recibimos objeto usuario
-  .then(user => {
+    const password =
+        document.getElementById("loginPass").value;
 
-    // 🔐 sesión
-    localStorage.setItem("auth", "true");
+    try {
 
-    // 👤 datos usuario
-    localStorage.setItem("userId", user.id);
-    localStorage.setItem("username", user.nombre || user.username);
+        const res = await fetch(
+            "https://crm-backend-production-7e25.up.railway.app/auth/login",
+            {
+                method: "POST",
 
-    // 🖼️ avatar
-    localStorage.setItem("userImg", user.avatar || "img/logo192.png");
+                headers: {
+                    "Content-Type": "application/json"
+                },
 
-    // 🚀 redirección
-    window.location.href = "clientes.html";
+                body: JSON.stringify({
+                    username,
+                    password
+                })
+            }
+        );
 
-  })
-  .catch(err => {
-    console.error("Error:", err);
-    mostrarToast("Login incorrecto o error de servidor");
-  });
+        // ❌ LOGIN INCORRECTO
+        if (!res.ok) {
 
-}
+            alert("Usuario o contraseña incorrectos");
+            return;
+        }
 
-// ENTER para login
-document.getElementById("pass").addEventListener("keypress", function(e) {
-  if (e.key === "Enter") {
-    login();
-  }
-});
+        // ✅ LOGIN OK
+        const usuario = await res.json();
 
-</script>
-<script>
-if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('service-worker.js')
-        .then(() => console.log("SW registrado"));
+        localStorage.setItem(
+            "usuario",
+            JSON.stringify(usuario)
+        );
+
+        // 🚀 ENTRAR AL CRM
+        window.location.href = "/clientes.html";
+
+    } catch (e) {
+
+        console.error(e);
+
+        alert("Error conectando con el servidor");
+    }
 }
 </script>
 </body>
