@@ -3493,7 +3493,11 @@ async function cargarSolicitudes() {
         console.log("📦 CONTENEDOR:", cont);
 
         if (!cont) {
-            console.error("❌ NO EXISTE solicitudesCitas");
+
+            console.error(
+                "❌ NO EXISTE solicitudesCitas"
+            );
+
             return;
         }
 
@@ -3503,12 +3507,29 @@ async function cargarSolicitudes() {
             </h2>
         `;
 
-        // 🔥 VACÍO
-        if (!data || data.length === 0) {
+        // ❌ ERROR BACKEND
+        if (!Array.isArray(data)) {
 
             html += `
-                <div class="solicitud-card"
-     id="solicitud-${s.id}">
+                <div class="solicitud-card">
+
+                    <p style="color:red;">
+                        ❌ Error cargando solicitudes
+                    </p>
+
+                </div>
+            `;
+
+            cont.innerHTML = html;
+
+            return;
+        }
+
+        // 📭 VACÍO
+        if (data.length === 0) {
+
+            html += `
+                <div class="solicitud-card">
 
                     <p style="color:#94a3b8;">
                         📭 No hay solicitudes todavía
@@ -3529,12 +3550,13 @@ async function cargarSolicitudes() {
 
 <div class="solicitud-card"
      id="solicitud-${s.id}">
+
     <h3>${s.titulo || "-"}</h3>
 
     <p>👤 ${s.cliente || "-"}</p>
 
     <p>🏢 ${s.empresa || "-"}</p>
-    
+
     <p>📧 ${s.email || "-"}</p>
 
     <p>📅 ${s.fecha || "-"}</p>
@@ -3563,14 +3585,13 @@ async function cargarSolicitudes() {
 
         </button>
 
-
     </div>
 
 </div>
 `;
-        }); 
+        });
 
-        // 🔥 SOLO UNA VEZ
+        // ✅ PINTAR HTML
         cont.innerHTML = html;
 
     } catch (e) {
