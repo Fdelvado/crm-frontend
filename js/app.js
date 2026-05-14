@@ -4304,8 +4304,7 @@ async function login() {
 
         // 🔥 ENTRAR CRM
 
-        location.reload();
-
+window.location.href = "/clientes.html";
     } catch (e) {
 
         console.error(e);
