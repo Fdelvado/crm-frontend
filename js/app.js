@@ -3,25 +3,24 @@ const usuarioLogueado =
         localStorage.getItem("usuario")
     );
 
-if (!usuarioLogueado) {
+const loginScreen =
+    document.getElementById("loginScreen");
 
-    document.getElementById(
-        "loginScreen"
-    ).style.display = "flex";
+const crmApp =
+    document.getElementById("crmApp");
 
-    document.getElementById(
-        "crmApp"
-    ).style.display = "none";
+if (loginScreen && crmApp) {
 
-} else {
+    if (!usuarioLogueado) {
 
-    document.getElementById(
-        "loginScreen"
-    ).style.display = "none";
+        loginScreen.style.display = "flex";
+        crmApp.style.display = "none";
 
-    document.getElementById(
-        "crmApp"
-    ).style.display = "block";
+    } else {
+
+        loginScreen.style.display = "none";
+        crmApp.style.display = "block";
+    }
 }
 
 async function cargarClientesGlobal() {
