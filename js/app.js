@@ -4256,10 +4256,10 @@ function mostrarToast(mensaje, tipo = "success") {
 async function login() {
 
     const username =
-        document.getElementById("loginUser").value;
+    document.getElementById("user").value;
 
-    const password =
-        document.getElementById("loginPass").value;
+const password =
+    document.getElementById("pass").value;
 
     try {
 
