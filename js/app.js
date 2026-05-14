@@ -4305,3 +4305,7 @@ const password =
     }
 }
 
+document
+    .getElementById("btnLogin")
+    .addEventListener("click", login);
+
