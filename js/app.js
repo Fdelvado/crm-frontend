@@ -4256,10 +4256,10 @@ function mostrarToast(mensaje, tipo = "success") {
 async function login() {
 
     const username =
-    document.getElementById("user").value;
+        document.getElementById("user").value;
 
-const password =
-    document.getElementById("pass").value;
+    const password =
+        document.getElementById("pass").value;
 
     try {
 
@@ -4267,11 +4267,9 @@ const password =
             "https://crm-backend-production-7e25.up.railway.app/auth/login",
             {
                 method: "POST",
-
                 headers: {
                     "Content-Type": "application/json"
                 },
-
                 body: JSON.stringify({
                     username,
                     password
@@ -4279,14 +4277,12 @@ const password =
             }
         );
 
-        // ❌ LOGIN INCORRECTO
         if (!res.ok) {
 
             alert("Usuario o contraseña incorrectos");
             return;
         }
 
-        // ✅ LOGIN OK
         const usuario = await res.json();
 
         localStorage.setItem(
@@ -4294,7 +4290,6 @@ const password =
             JSON.stringify(usuario)
         );
 
-        // 🚀 ENTRAR
         window.location.href = "/clientes.html";
 
     } catch (e) {
@@ -4305,7 +4300,10 @@ const password =
     }
 }
 
-document
-    .getElementById("btnLogin")
-    .addEventListener("click", login);
+window.addEventListener("DOMContentLoaded", () => {
 
+    document
+        .getElementById("btnLogin")
+        .addEventListener("click", login);
+
+});
