@@ -31,7 +31,7 @@ async function cargarClientesGlobal() {
 }
 
 // 🔒 LOGIN
-if (!localStorage.getItem("auth")) location.href = "login.html";
+if (!localStorage.getItem("auth")) location.href = "index.html";
 
 // ================= NAV =================
 function cargarSeccion(sec) {
@@ -549,7 +549,7 @@ function limpiarFormulario() {
 // ================= UTILS =================
 function logout() {
     localStorage.clear();
-    location.href = "login.html";
+    location.href = "index.html";
 }
 
 function capitalizar(t) {
