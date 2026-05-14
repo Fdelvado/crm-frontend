@@ -4264,13 +4264,12 @@ async function login() {
     try {
 
         const res = await fetch(
-           "https://crm-backend-production-7e25.up.railway.app/auth/login",
+            "https://crm-backend-production-7e25.up.railway.app/auth/login",
             {
                 method: "POST",
 
                 headers: {
-                    "Content-Type":
-                        "application/json"
+                    "Content-Type": "application/json"
                 },
 
                 body: JSON.stringify({
@@ -4280,64 +4279,29 @@ async function login() {
             }
         );
 
+        // ❌ LOGIN INCORRECTO
         if (!res.ok) {
 
-            throw new Error(
-                "Login incorrecto"
-            );
+            alert("Usuario o contraseña incorrectos");
+            return;
         }
 
-        const usuario =
-            await res.json();
-
-        // 💾 GUARDAR SESIÓN
+        // ✅ LOGIN OK
+        const usuario = await res.json();
 
         localStorage.setItem(
             "usuario",
             JSON.stringify(usuario)
         );
 
-        mostrarToast(
-            "✅ Bienvenido " +
-            usuario.nombre
-        );
+        // 🚀 ENTRAR
+        window.location.href = "/clientes.html";
 
-        // 🔥 ENTRAR CRM
-
-window.location.href = "/clientes.html";
     } catch (e) {
 
         console.error(e);
 
-        mostrarToast(
-            "❌ Usuario o contraseña incorrectos",
-            "error"
-        );
+        alert("Error conectando con el servidor");
     }
-}
-
-if ("serviceWorker" in navigator) {
-
-    window.addEventListener("load", () => {
-
-        navigator.serviceWorker
-            .register("/service-worker.js")
-
-            .then(reg => {
-
-                console.log(
-                    "✅ Service Worker OK",
-                    reg
-                );
-            })
-
-            .catch(err => {
-
-                console.error(
-                    "❌ Error Service Worker",
-                    err
-                );
-            });
-    });
 }
 
